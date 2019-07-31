@@ -662,13 +662,13 @@ be made lightly.
     `conduit` derivation, the Nix CLI tools need to know that first the
     `resourcet` derivation should be built.
 
-[^6] The `Cabal` library is used directly by the build process internally.
+[^6]: The `Cabal` library is used directly by the build process internally.
 
-[^7] Some of the questions are from me, not Dmitrii.  I added them to try to
+[^7]: Some of the questions are from me, not Dmitrii.  I added them to try to
     make this article easier to read from top to bottom without needing to
     jump around.
 
-[^8] This isn't completely true.  The actual setup is a little more complex.
+[^8]: This isn't completely true.  The actual setup is a little more complex.
 
     nixpkgs generally tracks the most recent Stackage LTS release.  At the time
     of this writing, the most recent Stackage LTS release is LTS-13.30.  This
@@ -685,7 +685,7 @@ be made lightly.
     not the latest current version on Hackage, is to hopefully increase the
     number of Haskell packages that successfully compile with each other.
 
-[^9] I'd recommend `stack` over `cabal` for most beginners.  `stack` is often
+[^9]: I'd recommend `stack` over `cabal` for most beginners.  `stack` is often
     easier to get things working.
 
     However, some people strongly dislike `stack` and swear by `cabal`.  Your
