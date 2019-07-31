@@ -22,10 +22,10 @@ Haskell, so I told him I'd be able to answer any questions he had.
 
 He wrote me back with a _great_ list of questions.  I thought it would be an
 injustice to the Haskell community if I didn't share my answers, so I decided
-to turn his questions and my answers into a an article.
+to turn his questions and my answers into an article.
 
 This article is mainly for Haskellers that have heard about Nix (on Twitter,
-Reddit, Youtube, etc), know about its advantages, but haven't actually played
+Reddit, YouTube, etc), know about its advantages, but haven't actually played
 around with it.  It is mainly a **high-level overview** of how Nix works with
 Haskell.  It is not a hands-on tutorial or walk-through.
 
@@ -117,7 +117,7 @@ So what makes learning Nix hard?  In my opinion, it is the following three thing
     than beginner-oriented HOW-TO manuals. As a beginner, it is quite difficult
     to figure out how to do things just from the above manuals.[^4]
 
-2.  Nix is a dynamic lanuage.  Unlike Haskell, you don't get "documentation for
+2.  Nix is a dynamic language.  Unlike Haskell, you don't get "documentation for
     free" with type signatures.
 
     There are no tools similar to [Haddock](https://www.haskell.org/haddock/)
@@ -462,7 +462,7 @@ reads `shell.nix`.
 
 As for other commonly seen files, like `release.nix`, `nixpkgs.nix`, etc,
 none of them have any special meaning.  There is no standard for what to name
-these other files.  There are no widely-followed best practices reguarding
+these other files.  There are no widely-followed best practices regarding
 naming.
 
 That said, most repositories meant to built with Nix have at least three files.
