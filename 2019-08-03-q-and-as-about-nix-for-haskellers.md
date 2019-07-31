@@ -1,6 +1,6 @@
 title = Questions and Answers about Nix for Haskellers
-tags = haskell, nix
-summary = Intro to Nix for Haskell development
+tags = haskell, nixos
+summary = Overview of Nix for Haskell development
 draft = true
 
 ------------------------------------------------------
@@ -74,7 +74,7 @@ build and install the package.
 
 Nix has a few well-known CLI tools.  In this article I will mostly talk about
 `nix-build` and `nix-shell`.  `nix-build` would take the above derivation and
-actually build it.  That is to say, `nix-build` uses the "special" keys in the
+actually build it.  `nix-build` uses the "special" keys in the
 above derivation to run shell scripts to build and install the binaries, shared
 objects, header files, and other files associated with the package.[^2]
 
@@ -166,7 +166,7 @@ When `nix-shell` is finished evaluating a derivation, it launches a Bash shell.
 It makes all the inputs to the derivation available in the Bash shell.  For
 instance, imagine you had a derivation that depends on `git`.  If you ran
 `nix-shell` on that derivation, it would put you in a Bash shell with an
-environment where the `git` CLI tools available.  In general, from `nix-shell`,
+environment where the `git` CLI tools available.  From `nix-shell`,
 it should be possible to build the derivation manually (running commands like
 `./configure && make && make install`).
 
@@ -216,19 +216,19 @@ mkDerivation {
 }
 ```
 
-This is a derivation for building `conduit`.  You can see that it basically
-just duplicates some of the info from the `.cabal` file.[^5]
+This is a derivation for building `conduit`.  You can see that it just
+duplicates some of the info from the `.cabal` file.[^5]
 
-nixpkgs provides a set of these derivations for building all the Haskell
-packages from Hackage.  nixpkgs provides easy ways of injecting your own
-packages into this package set, or changing the versions of packages from this
-package set (you can see above that the `conduit` version is fixed to 1.3.1.1).
-nixpkgs also provides a way to define your own completely custom Haskell
-package set.
+nixpkgs provides a set of these Haskell derivations for building all the
+Haskell packages from Hackage.  nixpkgs provides easy ways of injecting your
+own packages into this package set, or changing the versions of packages in
+this package set (you can see above that the `conduit` version is fixed to
+version 1.3.1.1).  nixpkgs also provides a way to define your own custom
+Haskell package set.
 
 The Haskell package set is used in different ways depending on whether you're
-using the Nix CLI tools, using `cabal` + Nix, or using `stack` + Nix.  I describe each of
-these methods below:
+using the Nix CLI tools, using `cabal` + Nix, or using `stack` + Nix.  I
+describe each of these methods below:
 
 1.  _Use `nix-build` from the CLI to build Haskell projects._
 
@@ -254,7 +254,7 @@ these methods below:
 
     The other situation is in CI.  Using `nix-build` in CI gives extremely high
     confidence that your build is actually reproducible.  In practice this ends
-    up being much nicer than directly calling `stack` or `cabal` in CI.
+    up being much nicer than directly calling `stack` or `cabal`.
 
 2.  _Use `cabal` + Nix to build Haskell projects._
 
@@ -268,15 +268,15 @@ these methods below:
     like `aeson`, `attoparsec`, etc.  It will then produce a GHC package
     database with all these dependencies available.
 
-    Normally, you will run `nix-shell` to put you in a Bash shell with this GHC
+    Normally, you will run `nix-shell` to get into a Bash shell with this GHC
     package database available.  The shell will have the required system
     libraries available, like `libpq` and `zlib`.  The shell will also provide
     build tools like `cabal` and `ghcid`.
 
     From here, you can run `cabal` commands like normal.  `cabal` will be able
-    to see the GHC package database provided by Nix, so `cabal` won't have to compile
-    any dependencies when you run `cabal new-build all` for the first time.
-    The only thing it will ever need to build is your own project.
+    to see the GHC package database provided by Nix. `cabal` won't have to compile
+    any dependencies when you run commands like `cabal new-build all` for the
+    first time.  The only thing it will ever need to build is your own project.
 
     This method is nice for interactive, everyday development.
 
@@ -295,7 +295,7 @@ these methods below:
 
     When you run `stack --nix build`, `stack` internally executes `nix-shell`
     with the derivation you have provided.  It then re-executes itself in this
-    environment.  Now that it is running in an environment with all the
+    new environment.  Now that it is running in an environment with all the
     required system libraries, it starts to compile all your Haskell
     dependencies.  Finally, it compiles your actual project.
 
@@ -308,7 +308,7 @@ these methods below:
 
     The `stack` documentation has a
     [nice section](https://docs.haskellstack.org/en/stable/nix_integration/)
-    about the integration with Nix.
+    about integration with Nix.
 
 If you're looking to use Nix for Haskell development, I recommend setting up
 your CI to use `nix-build`, and then using `cabal` + Nix for everyday
@@ -414,19 +414,19 @@ at the Stack documentation on
 _What is the difference between `nix-build` and `nix-shell` with respect to
 developing Haskell projects?_
 
-As described above, when you run `nix-build`, by default it looks for a file called
-`default.nix`.  This file should define a derivation.  `nix-build`
-builds this derivation.
+As described above, by default `nix-build` looks for a file called
+`default.nix`.  This file should define a derivation.  `nix-build` builds this
+derivation.
 
 `nix-build` is used to build a Haskell package.  The resulting Haskell
 libraries (shared objects), Haskell executables, documentation, etc are created
 in a directory in the Nix store.  The Haskell executables can be run directly,
 moved to other systems, etc.
 
-When you run `nix-shell`, by default it looks for a file called `shell.nix`.
-This file should define a derivation.  `nix-shell` pulls out all the input
-derivations for the given derivation.  `nix-shell` launches a Bash shell
-in an environment with all the input derivations available.
+By default `nix-shell` looks for a file called `shell.nix`.  This file should
+define a derivation.  `nix-shell` pulls out all the input derivations for the
+given derivation.  `nix-shell` launches a Bash shell in an environment with all
+the input derivations available.
 
 `nix-shell` is used in two ways for Haskell development.
 
@@ -462,18 +462,19 @@ reads `shell.nix`.
 
 As for other commonly seen files, like `release.nix`, `nixpkgs.nix`, etc,
 none of them have any special meaning.  There is no standard for what to name
-these other files.  There is also no widely-followed best practices for what to name
-them.
+these other files.  There are no widely-followed best practices reguarding
+naming.
 
 That said, most repositories meant to built with Nix have at least three files.
-The first two files are the `default.nix` and `shell.nix` you should already be
-familiar with.  The third file often defines the nixpkgs version you want to
-use, as well as an overlay that defines your own packages.
+The first two files are `default.nix` and `shell.nix`. The third file often
+defines the nixpkgs version you want to use, as well as an overlay that defines
+your own packages.
 
 This isn't super important to understand right now, but you can see an example
 of it in action in the
 [example repo](https://github.com/cdepillabout/nix-cabal-example-project).
-The third file is called `nixpkgs.nix`.
+I've called this third file
+[`nixpkgs.nix`](https://github.com/cdepillabout/nix-cabal-example-project/blob/master/nixpkgs.nix).
 
 ### 7. What is the recommended workflow when developing packages with nix?
 
@@ -519,16 +520,16 @@ built with `nix-build` directly.
 _I know that nix has its own store for storing packages. Is it possible to
 configure it to share the store for Haskell packages with cabal
 (`~/.cabal/store`) and stack (`~/.stack`)? I'm building with both build tools
-and caches for them eat a lot of my disk space... I don't really want to
+and caches for them eat a lot of my disk space. I don't really want to
 duplicate every Haskell package 3 times for nix as well._
 
 This is a tricky question.  The answer depends on the following questions:
 
 1.  Do you want to use `stack` or `cabal`?
 
-2.  If you said `cabal`, then do you always want to get Haskell dependencies
+2.  If you answered `cabal`, then do you always want to get Haskell dependencies
     from Nix?  Or do you want to build some packages fully with `cabal`, and
-    some packges with `cabal` + Nix?
+    some packages with `cabal` + Nix?
 
 If you are content with doing all development with `stack`, then you can
 continue to use `stack` as normal (with or without the Nix integration).
@@ -538,7 +539,7 @@ normal.
 There is no way to get `stack` to use Haskell dependencies built with Nix.
 
 If you want to use `cabal`, then you have to decide whether you want to use
-`cabal` + Nix for some projects and just use normal `cabal` for some
+`cabal` + Nix for some projects and use normal `cabal` (without Nix) for some
 projects, or you want to use `cabal` + Nix for ALL projects.
 
 If you want to use `cabal` + Nix for ALL projects, then in theory you can keep
@@ -548,9 +549,9 @@ projects, or if you use a tool like `haskell.nix` to generate a custom Haskell
 package set, then it is possible for many duplicate Haskell packages to end up
 in the Nix store.  This can eat up disk space.
 
-If you want to use `cabal` + Nix for some projects and just normal `cabal` for
-some projects, then you will end up with duplicate Haskell packages in the Nix
-store and `~/.cabal/store`.
+If you want to use `cabal` + Nix for some projects and normal `cabal` (without
+Nix) for some projects, then you will end up with duplicate Haskell packages in
+the Nix store and `~/.cabal/store`.
 
 If you want to use a combination of Nix, `cabal`, and `stack`, then you will
 end up with a bunch of duplicate Haskell packages.
@@ -572,11 +573,11 @@ resources below in the order they are listed:
     This is quite long.  Expect to spend 10 to 20 hours working through this.
 
     This may sound like a lot, but keep in mind that Nix is very similar to
-    Haskell.  If you are a Haskell beginner, and Haskell is your first
-    statically-typed functional language, you can't dive right into writing web
+    Haskell.  If you are a Haskell beginner (and Haskell is your first
+    statically-typed functional language), you can't dive right into writing web
     apps.  Instead, you have to slowly and methodically study the language.
     After you have enough of the beginner-level info under your belt, then you
-    can works on harder things like web apps.  Nix is the same.
+    can work on harder things like web apps.  Nix is the same.
 
 2.  [Gabriel Gonzalez's haskell-nix walk-through](https://github.com/Gabriel439/haskell-nix)
 
@@ -655,11 +656,11 @@ be made lightly.
     He talks about what makes Nix difficult for a new user.  I strongly agree
     with most of the points he makes.
 
-[^5]: For the most part, it only duplicates the information that is important
+[^5]: For the most part, it only duplicates the information important
     for figuring out the dependencies of `conduit`.  For instance, `conduit`
-    depends on `resourcet`.  When trying to build the `conduit` derivation, the
-    Nix CLI tools need to know that first the `resourcet` derivation should be
-    built.
+    depends on the `resourcet` Haskell package.  When trying to build the
+    `conduit` derivation, the Nix CLI tools need to know that first the
+    `resourcet` derivation should be built.
 
 [^6] The `Cabal` library is used directly by the build process internally.
 
